@@ -7,6 +7,6 @@ class AppTest {
 
     @Test
     void simpleTest() {
-        assertTrue(1 + 1 == 2, "Addition should work");
+        assertEquals(2, 1 + 1, "Addition should work");
     }
 }

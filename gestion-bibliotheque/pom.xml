@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  POM (Project Object Model) du projet "gestion-bibliotheque".
-  Ce fichier décrit la configuration de build, les dépendances et les plugins Maven.
+  POM (Project Object Model) du projet "gestion-bibliotheque"
+  Configuration Maven compatible Java 21 + JUnit 5
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <!-- Coordonnées du projet -->
@@ -16,58 +17,38 @@
   <url>http://www.example.com</url>
   <packaging>jar</packaging>
 
-  <!--
-    Propriétés globales :
-    - Encodage en UTF-8
-    - Niveaux de compilation Java (source/target) fixés à 17 (comme demandé)
-  -->
+  <!-- Propriétés globales -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
   </properties>
 
-  <!--
-    Dépendances nécessaires au projet.
-    Chaque bloc <dependency> précise le groupId/artifactId/version et éventuellement la portée (scope).
-  -->
+  <!-- Dépendances -->
   <dependencies>
 
-    <!--
-      JUnit 5 (plateforme Jupiter) pour les tests unitaires.
-      Portée "test" => utilisé uniquement pendant les phases de test, non embarqué dans le JAR final.
-    -->
+    <!-- JUnit 5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>5.9.3</version>
+      <version>5.10.2</version>
       <scope>test</scope>
     </dependency>
 
-    <!--
-      Apache Commons Lang : utilitaires pour les chaînes, nombres, objets, etc.
-      On l’utilise notamment pour StringUtils.isNotBlank dans Livre.estValide().
-    -->
+    <!-- Apache Commons Lang -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.12.0</version>
     </dependency>
 
-    <!--
-      SLF4J : API de logging (façade). On code contre SLF4J pour rester indépendant de l’implémentation.
-      L’implémentation concrète est fournie par Logback ci-dessous.
-    -->
+    <!-- SLF4J (API de logging) -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>2.0.7</version>
     </dependency>
 
-    <!--
-      Logback : implémentation de logging compatible SLF4J.
-      Apporte transitivement logback-core et s’intègre avec slf4j-api.
-    -->
+    <!-- Logback (implémentation du logging) -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -76,21 +57,47 @@
 
   </dependencies>
 
-  <!--
-    Plugins de build Maven.
-    Ici on déclare Surefire pour l’exécution des tests unitaires (JUnit 5).
-  -->
+  <!-- Plugins Maven -->
   <build>
     <plugins>
-      <!--
-        Maven Surefire Plugin : exécute les tests pendant "test" et "verify".
-        La version 3.x sait détecter et lancer JUnit 5 automatiquement.
-      -->
+
+      <!-- Plugin de compilation (Java 21) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <release>21</release>
+        </configuration>
+      </plugin>
+
+      <!-- Plugin de tests (JUnit 5) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.2.5</version>
       </plugin>
+
+      <!-- Enforcer pour forcer l’usage de Java 21 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[21,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
+
 </project>
